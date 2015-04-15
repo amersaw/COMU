@@ -127,7 +127,7 @@ void calcOperand(char parts[][MAX_CHARS],int partsCount,int opIndex){
     }
 }
 
-void ApplyOperand(char parts[][MAX_CHARS],int size, char operand){
+void applyOperand(char parts[][MAX_CHARS],int size, char operand){
     int i;
     for(i=0;i<size;i++){
         char currPartFirstChar=*(*(parts+i));
@@ -170,10 +170,10 @@ int evaluate(char form[MAX_CHARS],int *retval){
         }
     }
 
-    ApplyOperand(parts, partsCount, '*');
-    ApplyOperand(parts, partsCount, '/');
-    ApplyOperand(parts, partsCount, '-');
-    ApplyOperand(parts, partsCount, '+');
+    applyOperand(parts, partsCount, '*');
+    applyOperand(parts, partsCount, '/');
+    applyOperand(parts, partsCount, '-');
+    applyOperand(parts, partsCount, '+');
 
     int resIndex = findNumberIndex(parts,partsCount,1,-1, 0);
     *retval =  atoi(*(parts+resIndex));
@@ -234,6 +234,7 @@ void determineCellTypesAndFillEvaluated(){
         }
     }
 }
+
 int countOf(char arr[MAX_ROWS][MAX_COLUMNS], char key){
     int res = 0;
     int i,j;
@@ -245,8 +246,9 @@ int countOf(char arr[MAX_ROWS][MAX_COLUMNS], char key){
     }
     return res;
 }
+
 void evaluateAllCells(){
-    int reminedFormulas;
+    int remainingFormulas;
     do{
         int i,j;
         for(i=0;i<Height;i++){
@@ -258,23 +260,29 @@ void evaluateAllCells(){
                         continue;
                     *(*(evaluated+i)+j)=evaluatedValue;
                     *(*(cellsTypes+i)+j)='e';
-                    printf("\n[%d][%d]=%d\n",i,j,evaluatedValue);
+                  //  printf("\n[%d][%d]=%d\n",i,j,evaluatedValue);
                 }
             }
         }
-        reminedFormulas=countOf(cellsTypes,'f');
+        remainingFormulas=countOf(cellsTypes,'f');
 
-        printf("\n\n");
-        print2DArray(evaluated);
-        printf("\n\n");
-    }while(reminedFormulas>0);
+    }while(remainingFormulas>0);
 }
 
-void print2DArray(int input[MAX_ROWS][MAX_COLUMNS]){
+void print2DIntArray(int input[MAX_ROWS][MAX_COLUMNS]){
     int i,j;
     for(i=0;i<Height;i++){
         for(j=0;j<Width;j++){
                 printf("%d\t",*(*(input+i)+j));
+        }
+        printf("\n");
+    }
+}
+void print2DStringArray(char input[MAX_ROWS][MAX_COLUMNS][MAX_CHARS]){
+    int i,j;
+    for(i=0;i<Height;i++){
+        for(j=0;j<Width;j++){
+                printf("%15s",*(*(input+i)+j));
         }
         printf("\n");
     }
@@ -295,23 +303,22 @@ void getLineContent(char retVal[MAX_COLUMNS][MAX_CHARS]){
     for(i=0;i<Width;i++){
         printf("\n Lutfen yeni satirinda %d. stunun degeri giriniz :",i);
         scanf("%s",(retVal+i));
-        getchar();
     }
 }
 
-void copyLine(char source[MAX_COLUMNS][MAX_CHARS], char dest[MAX_COLUMNS][MAX_CHARS]){
+void copyLine(char source[MAX_COLUMNS][MAX_CHARS], char destination[MAX_COLUMNS][MAX_CHARS]){
     int i;
     for(i=0;i<Width;i++){
-        strcpy(dest+i,source+i);
+        strcpy(destination+i,source+i);
     }
 }
 
-void insertLine (char toInsert[MAX_ROWS][MAX_COLUMNS][MAX_CHARS], int index, char line[MAX_COLUMNS][MAX_CHARS]){
+void insertLine (char destination[MAX_ROWS][MAX_COLUMNS][MAX_CHARS], int index, char line[MAX_COLUMNS][MAX_CHARS]){
     int i;
     for(i=Height;i>index;i--){
-        copyLine(toInsert+i-1,toInsert+i);
+        copyLine(destination+i-1,destination+i);
     }
-    copyLine(line,toInsert+index);
+    copyLine(line,destination+index);
 }
 
 void calculateAndPrint(){
@@ -319,7 +326,13 @@ void calculateAndPrint(){
 
     evaluateAllCells();
 
-    print2DArray(evaluated);
+
+    printf("\n##################################");
+    printf("\nAsil Matrisi :\n----------------------------------\n");
+    print2DStringArray(inputTable);
+    printf("\n----------------------------------\nDegerlendiren Matris :\n----------------------------------\n");
+    print2DIntArray(evaluated);
+    printf("\n##################################");
 }
 
 
@@ -346,15 +359,14 @@ void printFilteredArray (int filter){
     for(i=0;i<Height;i++){
         for(j=0;j<Width;j++){
             int currNumber = *(*(evaluated+i)+j);
-                if(*((*(cellsTypes+i))+j) == 'n') //number that can be filltered
-                {
-                    if(currNumber<=filter)
-                        printf("!\t");
-                    else
-                        printf("%d\t",currNumber);
-
-                }else
+            if(*((*(cellsTypes+i))+j) == 'n') //number that can be filltered
+            {
+                if(currNumber<=filter)
+                    printf("!\t");
+                else
                     printf("%d\t",currNumber);
+            }else
+                printf("%d\t",currNumber);
         }
         printf("\n");
     }
@@ -377,9 +389,11 @@ int main(){
                 if(strcmp(girdi,"default")==0)
                     strcpy(girdi,"4,3,10,34,37,=A1+B1+C1,40,17,34,=A2+B2+C2,=A1+A2,=B1+B2,=C1+C2,=D1+D2");
 
-
                 createTable(girdi);
+
                 calculateAndPrint();
+
+                printf("\n\n\n");
 
 
                 break;
@@ -451,6 +465,7 @@ int main(){
                 printFilteredArray(filter);
                 break;
             }
+
         }
     }while(option!=0);
 
