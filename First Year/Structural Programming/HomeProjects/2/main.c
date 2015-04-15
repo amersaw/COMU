@@ -372,9 +372,12 @@ int main(){
             case 1:
             {
                 printf("\nLutfen tablonun degeri giriniz :\n");
-                strcpy(girdi,"4,3,10,34,37,=D5,40,17,34,=A3,=A1+A2,=B1+B2,=C1+C2,=D1+D2");
-                //strcpy(girdi,"2,1,=B2,=A1");
-                //scanf("%s",girdi);
+                scanf("%s",girdi);
+
+                if(strcmp(girdi,"default")==0)
+                    strcpy(girdi,"4,3,10,34,37,=A1+B1+C1,40,17,34,=A2+B2+C2,=A1+A2,=B1+B2,=C1+C2,=D1+D2");
+
+
                 createTable(girdi);
                 calculateAndPrint();
 
