@@ -7,12 +7,25 @@
 #define MAX_COLUMNS 10
 #define MAX_CHARS 1024
 
+//Kullancı girdiği tablu datası
 char girdi[MAX_CHARS];
+
+//Tablu parçaladıktan sonra ve her hücre yerine koyduktan sonra
 char inputTable [MAX_ROWS][MAX_COLUMNS][MAX_CHARS];
-int evaluated[MAX_ROWS][MAX_COLUMNS];
+
+//Tabludaki bulunan hücrelerin tipi:
+//n : Numara
+//f : Formula,
+//e : Değerlendirmiş (evaluated) formula
 char cellsTypes[MAX_ROWS][MAX_COLUMNS];
 
+//Tabludaki hücrelerin değerledikten sonra değeri
+int evaluated[MAX_ROWS][MAX_COLUMNS];
+
+//Tablu'da kaç satır ve kaç stun var
 int Height,Width;
+
+
 
 //Bu fonksiyon bir tane char * matristen belli bir yerden bir yere
 //kadar kesiyor integer olarak ve onun degere donduruyor
@@ -122,7 +135,7 @@ int mathCalculate(char operand, int n1, int n2){
             return n1*n2;
         case '/':
             if(n2==0){
-                printf("!!!!!!!!!DIVIDE BY ZERO EXCEPTION!!!!!!!!!!!!!!!!\nWILL CONTINUE AS ZERO\n");
+                printf("!!!!!!!!!DIVIDE BY ZERO EXCEPTION!!!!!!!!!!!!!!!!\nWILL CONTINUE AS ZERO");
                 return 0;
             }
             return n1/n2;
@@ -149,38 +162,41 @@ int findNumberIndex(char parts[][MAX_CHARS],int size, int increment,int startFro
 }
 
 
-//Bu fonksiyon bir formula parçalar alıyor ve matematik işlemin indexi alıyor ve bu işlemin iki sayıları
-//buluyor ve hesaplıyor, ve sayıların yerine # koyuyor, sonuç ise işlemin bulunduğu yerde saklanılyor
+int getDefaultValue(char mathOperand){
+    if((mathOperand=='/') || (mathOperand=='*'))
+        return 1;
+    else
+        return 0;
+}
 
-//Eğer birinci yada ikinci sayı getirirken bu sayı tablonun dışında olduğu zamanda onun yerine bir
-//değer koyalacak (1 çarp ve bölüme için ve 0 artırma ve eksik işlemler için) ve bu şekilde işlem
+//Bu fonksiyon bir formula parçalar alıyor ve matematik işlemin indexi alıyor ve bu işlemin iki sayıları
+//buluyor ve hesaplıyor, ve sayıların yerine # koyuyor, sonuç ise işlemin bulunduğu yerde koyuyor.
+
+//Eğer birinci yada ikinci sayı getirirken bu sayı tablonun dışında olduğu zamanda onun yerinde bir
+//değer koyalacak (1 çarp ve bölüme için yada 0 artırma ve eksik işlemler için) ve bu şekilde işlem
 //normal olarak devam edebilir
 
 //Parametreler:
     //parts : formulanın parçaları
     //partsCount : parts'ın boyutu
     //opIndex : matematik işlemi bulunduğu index
-
 void calcOperand(char parts[][MAX_CHARS],int partsCount,int opIndex){
 
-    int defaultValue = 0;
     char operation = *(*(parts+opIndex));
-
-    if((operation=='*') || (operation=='/'))
-        defaultValue=1;
 
     int firstNumberIndex = findNumberIndex(parts,partsCount,-1,opIndex);
     int secondNumberIndex = findNumberIndex(parts,partsCount,+1,opIndex);
+
     int firstNumber ;
     int secondNumber ;
 
     if((*(*(parts+firstNumberIndex)) == '$'))//Tablu dışında
-        firstNumber=defaultValue;
+        firstNumber=getDefaultValue(operation);
     else
         firstNumber = atoi(*(parts+firstNumberIndex));
 
     if((*(*(parts+secondNumberIndex)) == '$'))//Tablu dışında
-        secondNumber=defaultValue;
+        secondNumber=getDefaultValue(operation);
     else
         secondNumber= atoi(*(parts+secondNumberIndex));
 
@@ -190,7 +206,6 @@ void calcOperand(char parts[][MAX_CHARS],int partsCount,int opIndex){
 
     strcpy(parts+firstNumberIndex,"#");
     strcpy(parts+secondNumberIndex,"#");
-
 }
 
 //Bu fonksiyon bir fomula parçaları ve bir matematik işlem alıyor,
@@ -266,14 +281,14 @@ int evaluate(char form[MAX_CHARS],int *retval){
     //Formula Parçalanıyor
     int partsCount = seperateFormula(form,parts);
 
-    //Formulanın parçaları değerlendiriyor, bir tane başarsız kalırsa, bu fonksiyon bitecek
+    //Formulanın parçaları yerine gerçek değerler veriliyor, bir tane başarsız kalırsa, bu fonksiyon bitecek
     int i;
     for(i=0;i<partsCount;i++){
         char currPartFirstChar=*(*(parts+i));
         if(!isMathOperand(currPartFirstChar)){  //matematik işlem değilse yani bir hücrenin adresi
             int success = bringCellValue(parts+i);
             if(success==0) //not evaluated yet
-                return 0; //İşlem başarsız olduğunu dönderiyoruz
+                return 0; //İşlem başarsız olduğunu dönderiyoruz Error Code 0
         }
     }
 
@@ -286,7 +301,7 @@ int evaluate(char form[MAX_CHARS],int *retval){
 
     //Sonuç almak için boş (yani # olmayan) olmayan tek bir hücre kaldı, onun değeri alıyoruz
     int resIndex = findNumberIndex(parts,partsCount,1,-1);
-    *retval =  atoi(*(parts+resIndex));
+    *retval =  atoi(*(parts+resIndex));//Bir değer tablonun dışında $ olacak, ve bu değer 0 olarak verelecek
     return 1;
 }
 
@@ -298,7 +313,7 @@ int evaluate(char form[MAX_CHARS],int *retval){
 //Sonuç inputTable içinde saklanılacak
 //Parametreler :
     //input : kullancı girdiği data
-void createTable(char *input){
+void createTableFromString(char *input){
     int i,j;
     int current= -2; //-2 ile başlıyoruz çünkü ilk iki sayılar tabluadışında bir sayılar
     int lastComma=-1; //-1 ile başlıyoruz çünkü ilk defa 0 olması lazım
@@ -382,11 +397,11 @@ int countOf(char arr[MAX_ROWS][MAX_COLUMNS], char key){
 }
 
 
-//Bu fonksiyon butun inputTable'deki hücreler için "evaluate" fonksiyon çağırıyor,
+//Bu fonksiyon butun inputTable'deki formula hücreler için "evaluate" fonksiyon çağırıyor,
 //ve hesaplandığı değer (Başarlı olursa) "evaluated" matrisinde saklanıyor.
-//başarlı olmadığı zamanda onu atlıyor.
+//başarlı olmadığı zamanda onu atlıyor ve sonraki'ye devam ediyor
 
-//Her zaman Bu operatıon yaptıktan sonra kaç hesaplanmadığı formula kaldı sayır,
+//Her zaman Bu operatıon yaptıktan sonra kaç hesaplanmadığı formula kaldı sayıyor,
 //daha kaldı ise, yeniden onu tekrarlanıyor (hesaplanmayan hücreler sadece, yani 'f' olan hücreler)
 //Kalan hesaplanmayan hücreler sıfır olduğu zamanda demek ki her şey hesaplandı.
 
@@ -484,6 +499,9 @@ void insertLine (char destination[MAX_ROWS][MAX_COLUMNS][MAX_CHARS], int index, 
     copyLine(line,destination+index);
 }
 
+
+//Bu fonksiyon determineCellTypesAndFillEvaluated ve evaluateAllCells fonksiyonları
+//çağırarak sonuç evaluated matrisin içinde sonuç elde ediyor ve sonra onu ekrana yazıyor
 void calculateAndPrint(){
     determineCellTypesAndFillEvaluated();
 
@@ -497,6 +515,10 @@ void calculateAndPrint(){
     printf("\n################################################################################");
 }
 
+
+//Bu fonksiyon verildiği satır indexi siliyor copyLine fonksiyonu kullanarak.
+//Silinecek satır itibaren her satır aşağıdaki satırı alıyor ve kendi yerinde oluyor
+//boylece son satıra kadar
 void removeLine(char table[MAX_ROWS][MAX_COLUMNS][MAX_CHARS], int index){
     int i;
     for(i=index;i<Height;i++){
@@ -504,8 +526,14 @@ void removeLine(char table[MAX_ROWS][MAX_COLUMNS][MAX_CHARS], int index){
     }
 }
 
+//Bu fonksiyon kullancıdan bir hücrenin koordination okuyacak
+//ilk olarak hangi sutun bulunduğu, sonra hangi satırda
+//dönderdiği değer ise int olarak
+//Parametreler:
+    //i     :       Çıkış parametre, satir
+    //j     :       Çıkış parametre, stun
 void readCoordinates(int *i,int *j){
-    printf("\nLutfen sutun giriniz [A-J] arasinda :");//todo: make it dynamic, not only till J
+    printf("\nLutfen sutun giriniz [A-%c] arasinda :",'A'+Width-1);
     char col;
     scanf(" %c", &col);
     *j = col-'A';
@@ -516,6 +544,11 @@ void readCoordinates(int *i,int *j){
 
 }
 
+//Bu fonksiyon evaluated matrisi ekrana yazıyor, ama eğer bir tane eleman verildiği filter'den küçük/eşittir ise
+//onun yerinde ! symbol yazacak.
+//Bu filter formula hücreler hariç (cellsTypes matrisi kullanarak, her hücre neydi belli olur)
+//Parametreler:
+    //filter    :   niye göre bu data filterlenecek
 void printFilteredArray (int filter){
     int i,j;
     for(i=0;i<Height;i++){
@@ -535,7 +568,6 @@ void printFilteredArray (int filter){
 }
 
 int main(){
-
     int option;
     do{
         printMenuOptions();
@@ -544,15 +576,16 @@ int main(){
         {
             case 0://Exit
                 break;
-            case 1:
+            case 1://formula değerlendirme
             {
                 printf("\nLutfen tablonun degeri giriniz :\n");
+                printf("\t \"default\" de girdiribilirsiniz :\n>");
                 scanf("%s",girdi);
 
                 if(strcmp(girdi,"default")==0)
                     strcpy(girdi,"4,3,10,34,37,=A1+B1+C1,40,17,34,=A2+B2+C2,=A1+A2,=B1+B2,=C1+C2,=D1+D2");
 
-                createTable(girdi);
+                createTableFromString(girdi);
 
                 calculateAndPrint();
 
@@ -561,11 +594,17 @@ int main(){
 
                 break;
             }
-            case 2:
+            case 2://satir ekleme
             {
+
+                if(Height==MAX_ROWS){
+                    printf("\nDaha fazla bir satir eklenmez, bir tane satir silerek yeni bir satir ekleyebilirsiniz");
+                    break;
+                }
+
                 int newLineIndex;
                 do{
-                    printf("\nLutfen ekleyeceksin satir hangi satirdan sonra giriniz (0-%d) arasinda : ",Height);
+                    printf("\nLutfen ekleyeceksin satir hangi satirdan sonra giriniz (0-%d) arasinda> ",Height);
                     scanf("%d",&newLineIndex);
                     if(newLineIndex>Height){
                         printf("\nSu kadar satirlar zaten yok, lutfen %d dan daha az degerler giriniz",Height);
@@ -574,21 +613,28 @@ int main(){
                         printf("\nSifir yada sifirdan daha buyuk bir sayi giriniz.");
                     }
                 }while((newLineIndex>Height) || (newLineIndex<0));
+
+                //Bir satır okuyoruz kullancıdan
                 char newLine[MAX_COLUMNS][MAX_CHARS] ;
                 getLineContent(newLine);
+
+                //okuduğumuz satır matrise ekliyoruz
                 insertLine(inputTable,newLineIndex,newLine);
+
+                //Bizim boyutlarımız güncelliyoruz
                 Height++;
 
+                //Yeniden hesaplıyoruz ve ekrende yazıyoruz
                 calculateAndPrint();
 
                 break;
 
             }
-            case 3:
+            case 3://satir silme
             {
                 int lineToRemoveIndex;
                 do{
-                    printf("\nLutfen sileceksiniz satirin indexi giriniz (1-%d) arasinda :",Height);
+                    printf("\nLutfen sileceksiniz satirin indexi giriniz (1-%d) arasinda>",Height);
                     scanf("%d",&lineToRemoveIndex);
                     //lineToRemoveIndex--;//Because 0-based index
                     if((lineToRemoveIndex>Height) || (lineToRemoveIndex<=0)){
@@ -596,14 +642,21 @@ int main(){
                     }
                 }while((lineToRemoveIndex>Height) || (lineToRemoveIndex<=0));
 
+                //Bu satır siliyoruz
                 removeLine(inputTable, lineToRemoveIndex-1);//Because 0-based index
+
+                //Boyutlarımız güncelliyoruz
                 Height--;
+
+                //Yeniden hesaplıyoruz ve ekrende yazıyoruz
                 calculateAndPrint();
                 break;
             }
-            case 4:
+            case 4://Hucre degeri  degiştirme
             {
                 int i,j;
+
+                //doğru bir hücre okuyacağız kadar yeni bir hücre yeri okuyoruz
                 do{
                     readCoordinates(&i,&j);
                     if((i>Height) || (i<0) || (j>Width) || (j<0)){
@@ -612,25 +665,28 @@ int main(){
                 }while((i>Height) || (i<0) || (j>Width) || (j<0));
 
                 char cell[MAX_CHARS];
-                printf("\nLutfen hucrenin yeni degeri giriniz :");
+                printf("\nLutfen hucrenin yeni degeri giriniz>");
+
+                //Bu hücrenin değeri okuyoruz
                 scanf("%s",cell);
+
+                //doğru yerinde koyuyoruz
                 strcpy( (*(inputTable+i))+j,cell);
 
+                //Yeniden hesaplıyoruz ve ekrende yazıyoruz
                 calculateAndPrint();
                 break;
 
             }
-            case 5:
+            case 5://Filterleme
             {
                 int filter;
-                printf("\nHangi sayi'ye gore filterleyeceksiniz :");
+                printf("\nHangi sayi'ye gore filterleyeceksiniz>");
                 scanf("%d",&filter);
                 printFilteredArray(filter);
                 break;
             }
-
         }
-    }while(option!=0);
-
+    }while(option!=0);//Kullancı çıkma seçenek seçecek kadar bu menü yazıyoruz ve soruyoruz
     return 0;
 }
