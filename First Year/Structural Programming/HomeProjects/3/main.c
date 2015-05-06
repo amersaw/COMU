@@ -9,7 +9,6 @@
 #define PATTERN_HEIGHT 15
 
 
-//TODOOOOOOOOOOOOo
 void getRealPatternSize(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH], int *width, int *height){
 
     int top=PATTERN_HEIGHT+1, bottom=-1, left=PATTERN_WIDTH+1, right=-1;
@@ -60,14 +59,10 @@ int findChar(char input[PATTERN_HEIGHT][PATTERN_WIDTH], char key, int startX, in
 }
 
 int verifyPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGHT][PATTERN_WIDTH], int startX, int startY){
-    if((startX==7) &&( startY ==0))
-        printf("DDDD");
     int commanderX, commanderY;
     findChar(pattern,'+',0,0,&commanderX,&commanderY);
-    if(land[startY+commanderY][startX+commanderX]=='-') //kesin Yanli?
+    if(land[startY+commanderY][startX+commanderX]=='-') //kesin Yanliş
         return 0;
-    else
-        printf("dd");
 
     int soldiersCount = countExcept(pattern,'-');
 
@@ -79,10 +74,8 @@ int verifyPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGH
         searchResult = findChar(pattern,'*',x+1,y,&x,&y);
         if(searchResult == 0)
             continue;
-        if(land[startY+y][startX+x]=='-') //kesin Yanli?
+        if(land[startY+y][startX+x]=='-') //kesin Yanliş
             return 0;
-        else
-            printf("dd");
         matched++;
     }while((searchResult != 0) && (matched!=soldiersCount));
     if(matched == soldiersCount)
@@ -108,8 +101,91 @@ int matchPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGHT
     return 0;
 }
 
-int main()
-{
+/*
+Bu fonksiyon verildigi bir formasyon ve bir satirin indeksi boş olduğunu ya da olmadığını söylüyor
+*/
+int isEmptyRow(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH], int index){
+    int i;
+    for(i=0;i<PATTERN_WIDTH;i++)
+        if(pattern[index][i] != '-')
+            return 0;
+    return 1;
+}
+
+/*
+Bu fonksiyon verildigi bir formasyon ve bir sütunun indeksi boş olduğunu ya da olmadığını söylüyor
+*/
+int isEmptyColumn(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH], int index){
+    int i;
+    for(i=0;i<PATTERN_HEIGHT;i++)
+        if(pattern[i][index] != '-')
+            return 0;
+    return 1;
+}
+
+/*
+Bu fonksiyon verildiği bir formasyon üzerinde bir satır, başka bir satır yerinde yazdırıyor (kopylanıyor)
+*/
+void copyRow(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH],int to, int from){
+    int i;
+    for(i=0;i<PATTERN_WIDTH;i++){
+        pattern[to][i]=pattern[from][i];
+    }
+}
+
+/*
+Bu fonksiyon verildiği bir formasyon üzerinde bir sütun, başka bir sütuna yazdırıyor (kopylanıyor)
+*/
+void copyColumn(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH],int to, int from){
+    int i;
+    for(i=0;i<PATTERN_WIDTH;i++){
+        pattern[i][to]=pattern[i][from];
+    }
+}
+
+
+void removeFirstRow(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH]){
+    int i;
+    for(i=1;i<PATTERN_HEIGHT;i++){
+        copyRow(pattern,i-1,i);
+    }
+    for(i=0;i<PATTERN_WIDTH;i++){
+        pattern[PATTERN_HEIGHT-1][i]='-';
+    }
+
+}
+void removeFirstColumn(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH]){
+    int i;
+    for(i=1;i<PATTERN_WIDTH;i++){
+        copyColumn(pattern,i-1,i);
+    }
+    for(i=0;i<PATTERN_HEIGHT;i++){
+        pattern[i][PATTERN_WIDTH-1]='-';
+    }
+
+
+}
+void cleanPattern (char pattern[PATTERN_HEIGHT][PATTERN_WIDTH]){
+    int i;
+    for(i=0;i<PATTERN_HEIGHT;i++){
+        if(isEmptyRow(pattern,i)){
+            removeFirstRow(pattern);
+            i--;//Çünkü bir satır sildik
+        }
+        else
+            break;
+    }
+    for(i=0;i<PATTERN_HEIGHT;i++){
+        if(isEmptyColumn(pattern,i)){
+            removeFirstColumn(pattern);
+            i--;//Çünkü bir sutün sildik zaten
+        }
+        else
+            break;
+    }
+}
+
+int main(){
     char Land[LAND_HEIGHT][LAND_WIDTH];
     FILE *landFile = fopen(LAND_MAP_FILENAME , "r");
     int i;
@@ -121,6 +197,7 @@ int main()
     FILE *convoyPatternsFile = fopen(CONVOY_PATTERNS_FILENAME,"r");
     fscanf(convoyPatternsFile,"%d",&patternsCount);
 
+    printf("%5s %14s\n%5s %14s\n","Kod ","Koordinatlar ","-----","--------------");
     for(i=0;i<patternsCount;i++){
         int convoyCode;
         char pattern[PATTERN_HEIGHT][PATTERN_WIDTH];
@@ -129,13 +206,23 @@ int main()
         for(j=0;j<PATTERN_HEIGHT;j++){
             fscanf(convoyPatternsFile,"%s",pattern[j]);
         }
+        cleanPattern(pattern);
         int realPatternWidth, realPatternHeight;
         getRealPatternSize(pattern,&realPatternWidth,&realPatternHeight);
-if(convoyCode == 12)
-    ;//continue;
+        if(convoyCode == 12)
+            ;//continue;
         int resX, resY;
-        matchPattern(Land,pattern,realPatternWidth, realPatternHeight,&resX,&resY);
-        printf("X=%d, Y=%d\n",resX,resY);
+        int res = matchPattern(Land,pattern,realPatternWidth, realPatternHeight,&resX,&resY);
+        if(res==1){
+            int commanderX, commanderY;
+            findChar(pattern,'+',0,0,&commanderX,&commanderY);
+            printf("%5d (%d,%d)\n",convoyCode,resY+commanderY+1,resX+commanderX+1);
+            //printf("%d.\t:\tX=%d, Y=%d\n",convoyCode,,);
+        }
+        else{
+            printf("%5d %12s\n",convoyCode,"BULUNMADI   ");
+        }
+
     }
 
     return 0;
