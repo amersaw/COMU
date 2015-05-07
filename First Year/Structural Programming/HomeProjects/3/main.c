@@ -4,6 +4,7 @@
 #define LAND_MAP_FILENAME "arazi.txt"
 #define LAND_HEIGHT 25
 #define LAND_WIDTH 80
+
 #define CONVOY_PATTERNS_FILENAME "konvoy_formasyonu.txt"
 #define PATTERN_WIDTH 15
 #define PATTERN_HEIGHT 15
@@ -74,7 +75,7 @@ int verifyPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGH
         searchResult = findChar(pattern,'*',x+1,y,&x,&y);
         if(searchResult == 0)
             continue;
-        if(land[startY+y][startX+x]=='-') //kesin Yanliş
+        if(land[startY+y][startX+x]=='-') //Yanliş
             return 0;
         matched++;
     }while((searchResult != 0) && (matched!=soldiersCount));
@@ -83,22 +84,28 @@ int verifyPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGH
     else
         return 0;
 }
-
-int matchPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGHT][PATTERN_WIDTH],int realPatternWidth, int realPatternHeight, int *x, int *y){
-    int i,j;
+void patternMatched(char pattern[PATTERN_HEIGHT][PATTERN_WIDTH], int convoyCode, int x, int y){
+    int commanderX, commanderY;
+    findChar(pattern,'+',0,0,&commanderX,&commanderY);
+    printf("%5d\t(%d,%d)\n",convoyCode,y+commanderY+1,x+commanderX+1);
+    //printf("%d.\t:\tX=%d, Y=%d\n",convoyCode,,);
+}
+int matchPattern(char land[LAND_HEIGHT][LAND_WIDTH], char pattern[PATTERN_HEIGHT][PATTERN_WIDTH], int convoyCode, int realPatternWidth, int realPatternHeight, int *x, int *y){
+    int i,j,matchesCount=0;
     for(i=0;i<(LAND_HEIGHT-realPatternHeight);i++){
         //printf("\n%d\n",i);
         for(j=0;j<(LAND_WIDTH-realPatternWidth);j++){
-                //printf("%d ",j);
-                if(verifyPattern(land,pattern,j,i) == 1)
-                {
-                    *x=j;
-                    *y=i;
-                    return 1;
-                }
+            //printf("%d ",j);
+            if(verifyPattern(land,pattern,j,i) == 1)
+            {
+                *x=j;
+                *y=i;
+                patternMatched(pattern, convoyCode, j, i);
+                matchesCount++;
+            }
         }
     }
-    return 0;
+    return matchesCount;
 }
 
 /*
@@ -212,16 +219,10 @@ int main(){
         if(convoyCode == 12)
             ;//continue;
         int resX, resY;
-        int res = matchPattern(Land,pattern,realPatternWidth, realPatternHeight,&resX,&resY);
-        if(res==1){
-            int commanderX, commanderY;
-            findChar(pattern,'+',0,0,&commanderX,&commanderY);
-            printf("%5d (%d,%d)\n",convoyCode,resY+commanderY+1,resX+commanderX+1);
-            //printf("%d.\t:\tX=%d, Y=%d\n",convoyCode,,);
-        }
-        else{
-            printf("%5d %12s\n",convoyCode,"BULUNMADI   ");
-        }
+        int res = matchPattern(Land, pattern, convoyCode, realPatternWidth, realPatternHeight, &resX, &resY);
+        if(res==0)
+            printf("%5d\t%12s\n",convoyCode,"BULUNMADI   ");
+
 
     }
 
