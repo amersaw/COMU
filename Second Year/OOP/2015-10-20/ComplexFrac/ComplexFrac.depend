@@ -1,0 +1,20 @@
+# depslib dependency file v1.0
+1278918318 source:d:\amergithub\comu\second year\oop\2015-10-20\complexfrac\complex.cpp
+	<iostream>
+	"fraction.h"
+	"complex.h"
+
+1278917964 d:\amergithub\comu\second year\oop\2015-10-20\complexfrac\fraction.h
+
+1278918288 d:\amergithub\comu\second year\oop\2015-10-20\complexfrac\complex.h
+	"fraction.h"
+
+1278918252 source:d:\amergithub\comu\second year\oop\2015-10-20\complexfrac\fraction.cpp
+	<iostream>
+	"fraction.h"
+
+1351585788 source:d:\amergithub\comu\second year\oop\2015-10-20\complexfrac\main.cpp
+	<cstdlib>
+	<iostream>
+	"complex.h"
+
