@@ -46,24 +46,19 @@ bool Set::isMember(char ch){
 
 
 Set Set::operator+(char ch){
-    if(isMember(ch))
-        return *this;
-    else{
+    if(!isMember(ch)){
         if(len == MaxSize-1)
             cout<<"Daha Eklenmez"<<endl;
         else{
             members[len++]=ch;
         }
     }
-
-
+    return *this;
 }
 
 
 Set Set::operator-(char ch){
-    if(!isMember(ch))
-        return *this;
-    else{
+    if(isMember(ch)){
         int index = find(ch);
         char tmp;
         for(int i = index; i<len-1;i++){
@@ -72,7 +67,7 @@ Set Set::operator-(char ch){
         members[len-1] = '\0';
         len--;
     }
-
+    return *this;
 }
 
 
@@ -92,5 +87,8 @@ int main (){
 
     Set x;
     x = x+ '1';
+    x = x+ 'a';
+    x.showSet();
+    x = x - '1';
     x.showSet();
 }
