@@ -217,6 +217,12 @@ int foo(struct dugum *kok){ // ic dugum sayisi
     else return 0;
 }
 
+int depth(struct dugum* a){
+	int right = depth(a->sag)+1;
+	int left = depth(a->sol)+1;
+	return left>right?left:right;
+}
+
 int main(int argc, char** argv) {
     struct ikili_arama_agaci *agac;
     ikili_arama_agaci_olustur(&agac);
