@@ -1,4 +1,4 @@
-﻿// ikinci sorunun cevabı, "heap_mi" fonksiyonu kalan kodlar bu fonksiyon nasıl kullanacağız göstermek için
+﻿//bu sorunun cevabı, "heap_mi" fonksiyonu kalan kodlar bu fonksiyon nasıl kullanacağız göstermek için
 
 #include <stdio.h>
 

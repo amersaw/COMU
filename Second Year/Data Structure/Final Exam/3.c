@@ -1,4 +1,4 @@
-﻿// ikinci sorunun cevabı, "kardes_bul" fonksiyonu kalan kodlar bu fonksiyon nasıl kullanacağız göstermek için
+﻿// bu sorunun cevabı, "kardes_bul" fonksiyonu kalan kodlar bu fonksiyon nasıl kullanacağız göstermek için
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -44,7 +44,6 @@ struct dugum* dugum_olustur(int icerik){
 
 void ekle(struct dugum **kok,int icerik){
     if(*kok == NULL){
-
         *kok = dugum_olustur(icerik);
         return;
     }
