@@ -15,7 +15,7 @@ struct dugum {
 
 struct dugum* kardes_bul(struct dugum* root, struct dugum* d){
     if(root == NULL) return 0;
-    if(root == d) return NULL; // kök'ün kardeşi yok
+    if(root == d) return NULL; // kök'ün kardeşi olmaz
     if(root->sag == d) return root->sol;
     if(root->sol == d) return root->sag;
     struct dugum * sagSonuc = kardes_bul(root->sag,d);

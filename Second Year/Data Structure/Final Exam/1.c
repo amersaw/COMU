@@ -1,5 +1,6 @@
 #include <stdio.h>
 int hash(char * tc,int onun_kuvveti){
+	if(tc[11] != '\0') return -1; //Hata cunku TC numaranin uzunlugu 11 degil
     int sonuc = 0,i;
     for(i=0;i<onun_kuvveti;i++){
         char simdiki_hane = tc[10-i];

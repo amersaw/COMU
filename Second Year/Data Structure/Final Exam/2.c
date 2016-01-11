@@ -65,7 +65,7 @@ int heap_mi(struct heap* h){
     for(i=0; i< h->eleman_sayisi/2; i++){
 		int sag = 2*i+2;
 		int sol = 2*i+1;
-        if( (sag < h->eleman_sayisi && h->dizi[i].key < h->dizi[sol].key) ||  // sag cocugu var ve babasindan buyuk ise demek ki heap degil
+        if( (sag < h->eleman_sayisi && h->dizi[i].key < h->dizi[sag].key) ||  // sag cocugu var ve babasindan buyuk ise demek ki heap degil
            (sol < h->eleman_sayisi && h->dizi[i].key < h->dizi[sol].key))  // sol cocugu var ve babasindan buyuk ise demek ki heap degil
             return 0;
     }
