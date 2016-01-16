@@ -6,11 +6,11 @@ using namespace std;
 int A[]= {3,5,6,20,28,4,32} ;
 int main(){
     list<int> st=list<int>(A,A+7);//Bu en uygun yapici kullandik, ilk parametre liste basi, ikinci parametre listenin son elamandan bir daha sonra eleman (son eleman :st+6)
-    list<int>::iterator it; 
-    it = st.end(); 
-    while(it!=st.begin()){ 
-        it--;
-        cout<<*it<<endl;// simdiki elemanin degeri yazdiriyoruz
+    list<int>::iterator it; //Normal isaretci tanimlaniyoruz
+    it = st.end(); //son elemandan basliyoruz (burda dikkat edilmesi lazim, bu son eleman degil, bu son elemanin sonraki eleman)
+    while(it!=st.begin()){  //ilk elemana ulasina kadar devam ediyoruz
+        it--; //ilk once onceki elemana gidiyoruz (cunku biz son elemanin sonraki elemandan basladik)
+        cout<<*it<<endl; //sonra şu andaki elemanin degeri yazdiriyoruz
     }
     cout<<"Arama yapacaksiniz elemani giriniz :";
     int ara;
