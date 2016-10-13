@@ -1,0 +1,14 @@
+TRISB=%00000000
+PortB=1
+
+label2: 
+    if PortD.0 = 1 then ' saga
+            
+    endif 
+    if PortD.1 = 1 then ' sola
+    
+    endif
+        
+goto label2
+
+

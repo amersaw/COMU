@@ -1,0 +1,37 @@
+
+
+        
+
+TRISB=%00000000
+PortB=1
+label2: 
+    While PortB<128
+        Pause 500
+        PortB=PortB<<1
+    wend 
+    While  PortB >1
+        Pause 500
+        PortB=PortB>>1
+    wend
+goto label2
+
+
+TRISB=%00000000
+PortB=1
+i var word
+label1: 
+    While PortB<128
+        PortB = ~PortB
+        Pause 500
+        PortB = ~PortB        
+        PortB=PortB<<1
+    wend 
+    While  PortB >1
+        PortB = ~PortB    
+        Pause 500
+        PortB = ~PortB        
+        PortB=PortB>>1
+    wend
+goto label1
+
+

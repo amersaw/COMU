@@ -1,0 +1,17 @@
+TRISB=%10000000
+
+PortB=0              
+led VAR Byte
+led=0
+label1: 
+    if PortB.7 = 1 then
+        pause 500
+        led = led+1
+        if led = 16 then led = 0
+        PortB =  %10000000 + led
+    else 
+        led = 0
+        PortB = 0
+    endif    
+goto label1
+
