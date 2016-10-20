@@ -1,0 +1,35 @@
+ADCON1=7
+TRISB=%00000000
+TRISC=%00000000
+TRISD=%00000000
+TRISE=%00000111
+PortB=0              
+k VAR Byte
+sayi1 VAR Byte
+sayi2 VAR Byte
+sayi1=0
+sayi2=0
+PortD = 0    
+label1: 
+    if PortE.0 = 0 then
+        sayi1=sayi1+1
+        if sayi1=10 then sayi1 = 0
+        PAUSE 200
+    endif    
+    IF PortE.1 = 0 Then
+        sayi2=sayi2+1
+        if sayi2=10 then sayi2 = 0  
+        PAUSE 200
+    endif
+    
+    IF PortE.2 = 0 Then
+        k=(sayi1+sayi2)
+        
+        
+        PortD=k + (k dig 1) * 6
+    endif
+    PortB=sayi1
+    
+    PortC=sayi2
+goto label1
+
