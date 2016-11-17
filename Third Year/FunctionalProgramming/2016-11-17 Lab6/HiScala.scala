@@ -1,11 +1,8 @@
-import domain.{Ucabilen, Yuzebilen}
-import info.amersaw.codes._
-
-import scala.collection.mutable.ArrayBuffer
 
 /**
-  * Created by Amer on 12/11/2016.
+  * Created by Amer on 17/11/2016.
   */
+import domain._
 object HiScala extends App {
   var Kusler = List(new Sahin(), new Penguin(),new Marti());
   Kusler.foreach(k=>
