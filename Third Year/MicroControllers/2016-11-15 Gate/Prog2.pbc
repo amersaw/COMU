@@ -1,0 +1,66 @@
+INCLUDE "LCD.pbp"
+
+TRISA=%00000000               
+ADCON1=7
+TRISB=%01110000
+PortA=0
+PortB=0 
+okunanSayi var byte
+sifre var byte[3]
+yer var byte
+
+label:  
+   okunansayi=99
+   while(okunansayi>9)
+       gosub sayioku
+   wend
+   sifre[0]=okunansayi
+   
+   pause 200
+   okunansayi=99
+   while(okunansayi>9)
+       gosub sayioku
+   wend
+   sifre[1]=okunansayi
+   
+       pause 200
+   okunansayi=99
+   while(okunansayi>9)
+       gosub sayioku
+   wend
+   sifre[2]=okunansayi
+   
+
+
+   
+   LCDOUT $fe,1,#sifre[0],#sifre[1],#sifre[2]
+   pause 200
+goto label
+
+
+SayiOku:
+    okunansayi = 99
+    PortB = %00000001
+    if PortB.4 = 1 THEN okunanSayi=1
+    if PortB.5 = 1 THEN okunanSayi=2
+    if PortB.6 = 1 THEN okunanSayi=3
+    pause 10
+    PortB = %00000010
+    if PortB.4 = 1 THEN okunanSayi=4
+    if PortB.5 = 1 THEN okunanSayi=5
+    if PortB.6 = 1 THEN okunanSayi=6
+    pause 10
+    PortB = %00000100
+    if PortB.4 = 1 THEN okunanSayi=7
+    if PortB.5 = 1 THEN okunanSayi=8
+    if PortB.6 = 1 THEN okunanSayi=9
+    pause 10
+    PortB = %00001000
+    if PortB.4 = 1 THEN okunanSayi=10
+    if PortB.5 = 1 THEN okunanSayi=0
+    if PortB.6 = 1 THEN okunanSayi=11
+    pause 10
+    if(okunansayi=99) then goto sayioku
+    pause 50
+    return
+    

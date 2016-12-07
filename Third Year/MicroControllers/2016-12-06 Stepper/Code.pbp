@@ -1,0 +1,56 @@
+include "lcd.pbp"
+
+TRISA=%00000011
+TRISB=0
+TRISC=0
+
+SYMBOL sag = PortA.0
+SYMBOL sol = PortA.1
+pos VAR byte
+
+bekle CON 50
+topbekleme CON 100
+PortC = 0 
+PortB=1
+label:
+    while sol = 0
+        pos=pos+1
+        if pos = 8 then pos = 0      
+        
+        select case pos
+            case 0: PortC = %10000000:LCDOUT $fe,1,"|       *|":PAUSE 20
+            case 1: PortC = %01000000:LCDOUT $fe,1,"|      * |":PAUSE 20
+            case 2: PortC = %00100000:LCDOUT $fe,1,"|     *  |":PAUSE 20
+            case 3: PortC = %00010000:LCDOUT $fe,1,"|    *   |":PAUSE 20
+            case 4: PortC = %00001000:LCDOUT $fe,1,"|   *    |":PAUSE 20
+            case 5: PortC = %00000100:LCDOUT $fe,1,"|  *     |":PAUSE 20
+            case 6: PortC = %00000010:LCDOUT $fe,1,"| *      |":PAUSE 20
+            case 7: PortC = %00000001:LCDOUT $fe,1,"|*       |":PAUSE 20
+        end select     
+        
+        PortB=PortB>>1
+        if PortB = 0 then PortB=8    
+        
+        pause topbekleme  
+        
+    wend
+    while sag = 0             
+        if pos = 0 then pos = 8  
+        pos=pos-1
+        select case pos
+            case 0: PortC = %10000000:LCDOUT $fe,1,"|       *|":PAUSE 20
+            case 1: PortC = %01000000:LCDOUT $fe,1,"|      * |":PAUSE 20
+            case 2: PortC = %00100000:LCDOUT $fe,1,"|     *  |":PAUSE 20
+            case 3: PortC = %00010000:LCDOUT $fe,1,"|    *   |":PAUSE 20
+            case 4: PortC = %00001000:LCDOUT $fe,1,"|   *    |":PAUSE 20
+            case 5: PortC = %00000100:LCDOUT $fe,1,"|  *     |":PAUSE 20
+            case 6: PortC = %00000010:LCDOUT $fe,1,"| *      |":PAUSE 20
+            case 7: PortC = %00000001:LCDOUT $fe,1,"|*       |":PAUSE 20
+        end select  
+        
+        PortB=PortB<<1
+        if PortB = 16 then PortB=1     
+        pause topbekleme 
+    wend
+goto label
+

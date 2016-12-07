@@ -1,0 +1,56 @@
+INCLUDE "LCD.pbp"
+
+TRISA=%00000011               
+lcdout $fe,$40,$1F,$10,$10,$10,$1F,$04,$04 'ç
+lcdout $fe,$48,$1E,$00,$1E,$12,$1E,$02,$1E 'g
+lcdout $fe,$50,$0A,$00,$0E,$11,$11,$11,$0E 'o  
+lcdout $fe,1
+saat var byte
+dakika var byte
+saniye var byte
+i var byte
+saat = 0
+dakika = 0
+saniye=0
+
+label:
+
+    while saat<25
+        while dakika<60
+            while saniye<60
+                for i = 1 to 5
+                    if PortA.0 =0 then saat = saat +1
+                    if saat = 23 then saat = 0
+                    
+                    if portA.1 = 0 then dakika=dakika+1
+                    if dakika = 60 then dakika = 0
+                    
+                    lcdout $fe,1,"      "
+                                  
+                    if saat<10 then lcdout "0"
+                    lcdout #saat,":"           
+                    
+                    if dakika<10 then lcdout "0"
+                    lcdout #dakika,":"
+
+
+                    if saniye<10 then lcdout "0"
+                    lcdout #saniye
+                    
+                    
+                    pause 200
+                next i
+                saniye = saniye+1
+            wend
+            saniye = 0
+            dakika=dakika+1
+        wend
+        dakika=0
+        saat=saat+1
+    wend
+    
+    '
+    'lcdout 0,"i" ,1," k" ,2,"fte"
+
+    pause 100
+goto label

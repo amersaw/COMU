@@ -1,0 +1,5 @@
+INCLUDE "LCD.pbp"
+
+
+LCDOUT $FE,1,"AMER"
+LCDOUT $FF,2,"AMERs"

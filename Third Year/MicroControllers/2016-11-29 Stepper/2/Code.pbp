@@ -1,0 +1,28 @@
+INCLUDE "lcd.pbp"
+TRISB=0
+TRISC=%00000011
+bekle CON 25
+PortB=1
+ileri var byte
+geri var byte
+PortC=0
+label:
+pause 50     
+    while PortC.0 = 1 
+        PortB=PortB>>1
+        if PortB = 0 then PortB=16    
+        geri=geri+1
+        pause bekle            
+    WEND
+    while PortC.1 = 1 
+        PortB=PortB<<1
+        if PortB = 16 then PortB=1 
+        ileri = ileri+1
+        pause bekle            
+    WEND
+    LCDOUT $fe,1,"Ileri:",#(ileri/4)
+    LCDOUT $fe,$C0,"Geri:",#(geri/4)
+    pause 50
+    
+goto label
+

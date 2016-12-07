@@ -1,0 +1,19 @@
+TRISB=0
+TRISC=%00000011
+bekle CON 25
+PortB=1
+PortC=0
+label:
+    while PortC.0 = 1 
+        PortB=PortB<<1
+        if PortB = 16 then PortB=1
+        pause bekle            
+    WEND
+    while PortC.1 = 1 
+        PortB=PortB>>1
+        if PortB = 0 then PortB=16
+        pause bekle            
+    WEND
+    
+goto label
+

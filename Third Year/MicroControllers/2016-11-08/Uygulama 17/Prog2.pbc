@@ -1,0 +1,34 @@
+INCLUDE "LCD.pbp"
+
+TRISA=%00000111               
+ADCON1=7
+TRISB=%00000000
+PortA=0
+PortB=0 
+
+label:  
+    IF(PortA.0 = 0)THEN 'Geri
+        PortB.0=1
+        PortB.1=0
+        
+
+        LCDOUT $fe,1,     "Motor"
+        lcdout $FE, $C0,  "ILERI"
+
+        pause 20
+    ENDIF
+    WHILE(PortA.1 = 0) 'ileri
+        PortB.0=0
+        PortB.1=1    
+        LCDOUT $fe,1,     "Motor"
+        lcdout $FE, $C0,  "GERI"
+        pause 20
+    wend
+    
+    WHILE(PortA.2 = 0) 'ileri
+        PortB.0=0
+        PortB.1=0   
+        LCDOUT $fe,1
+        pause 20
+    wend
+goto label

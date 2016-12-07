@@ -1,0 +1,69 @@
+ADCON1=7
+TRISB=%11110000
+TRISD=%00000000
+PortB=0 
+PortD=0           
+girilenSayi VAR Byte
+sayi1 VAR BYTE
+operator var byte
+sonuc VAR BYTE
+sonuc=0
+girilenSayi=0
+operator = 99 ' operator yok yani
+label1: 
+   	pause 100
+    Gosub sayiOku
+    if girilensayi = 15 then sonuc=0:operator=99:goto goster
+    if girilenSayi<=9 then 'sayidir
+        if operator=99 then sonuc=girilenSayi:goto goster 'operator yok
+    	SELECT case operator
+    	   case  10 'bolme
+    	       sonuc=sonuc/girilenSayi
+    	   case 11 ' carpma
+    	       sonuc=sonuc*girilenSayi	   
+    	   case 12 'eksi
+    	       sonuc=sonuc-girilenSayi
+    	   case 13  'arti
+    	       sonuc=sonuc+girilenSayi
+        end select
+        operator=99' operator sifirliyoruz
+    else 'operatordur
+        operator= girilenSayi
+        PortD=0
+    endif
+goster:
+    PortD=sonuc + (sonuc dig 1) * 6
+goto label1  	
+  	
+sayiOku:  	
+  	girilenSayi = 99
+	PortB=%11110001
+	IF PortB.4 = 1 THEN girilenSayi=7
+	IF PortB.5 = 1 THEN girilenSayi=8  
+	IF PortB.6 = 1 THEN girilenSayi=9
+	IF PortB.7 = 1 THEN girilenSayi=10
+	PAUSE 10
+	PortB=%11110010
+	IF PortB.4 = 1 THEN girilenSayi=4
+	IF PortB.5 = 1 THEN girilenSayi=5
+	IF PortB.6 = 1 THEN girilenSayi=6
+	IF PortB.7 = 1 THEN girilenSayi=11
+	PAUSE 10
+	PortB=%11110100
+	IF PortB.4 = 1 THEN girilenSayi=1
+	IF PortB.5 = 1 THEN girilenSayi=2
+	IF PortB.6 = 1 THEN girilenSayi=3
+	IF PortB.7 = 1 THEN girilenSayi=12
+	PAUSE 10
+	PortB=%11111000
+	IF PortB.4 = 1 THEN girilenSayi=15
+	IF PortB.5 = 1 THEN girilenSayi=0
+	IF PortB.6 = 1 THEN girilenSayi=14
+	IF PortB.7 = 1 THEN girilenSayi=13
+	PAUSE 10
+	IF girilenSayi = 99 THEN
+        GOTO sayiOku
+    ELSE
+    	RETURN
+   	ENDIF
+

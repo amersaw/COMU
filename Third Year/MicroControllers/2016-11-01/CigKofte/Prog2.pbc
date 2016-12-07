@@ -1,0 +1,12 @@
+INCLUDE "LCD.pbp"
+
+lcdout $fe,$40,$1F,$10,$10,$10,$1F,$04,$04 'ç
+lcdout $fe,$48,$1E,$00,$1E,$12,$1E,$02,$1E 'g
+lcdout $fe,$50,$0A,$00,$0E,$11,$11,$11,$0E 'o
+
+
+label:
+    lcdout $fe,1
+    lcdout 0,"i" ,1," k" ,2,"fte"
+    pause 100
+goto label
