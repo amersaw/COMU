@@ -13,7 +13,15 @@ namespace SampleCodes
             Console.WriteLine("a:" + a + ",b:" + b);
         }
 
-        //boyle overload yapamiyoruz, çünkü önceki method ve bu method 
+        //Burası overload yaptık, IsYap methodu 2 farklı şekilde çağırabilirz artık:
+            //ya 2 parametre ile
+            //yada 3 parametre ile
+        public static int IsYap(int a, int b, int c)
+        {
+            return a + b - c + 978;
+        }
+
+        //HATALI:boyle overload yapamiyoruz, çünkü önceki method ve bu method 
         //ikisini 2 tane int parametre alıyorlar
         //geri dönüş fark var da, am overload için fark yok
         public static int IsYap(int a, int b)
