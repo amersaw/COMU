@@ -9,11 +9,12 @@ namespace SampleCodes
         public T VarsayilanDegerDondur()
         {
             //HATALI: yapamıyoruz çünkü T tipi int olabilir ve null int'e çevirilmez
-            //return null;
+            return null;
 
             //HATALI: bunu da yapamıyoruz, çünkü T tipi herhangi class olabilir
             //Person tipinden ise 0 Person'a çevirlimez 
-            //return 0;
+            return 0;
+
             //EEEH "T" tipinin varsayılan değeri nasıl alabiliriz 
             //"default" kullanarak, int ise 0, refereance tiplerden ise null, bool ise false...vb
             return default(T);

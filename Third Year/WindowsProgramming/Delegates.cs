@@ -37,7 +37,7 @@ namespace SampleCodes
             Islem carpmaIslemi = new Islem(Carpma);
 
             //HATALI : cunku bolme fonksiyonu ayni imza degildir (double tipinden döndürüyor)
-            //Islem bolmeIslemi = new Islem(bolme);
+            Islem bolmeIslemi = new Islem(bolme);
 
             int sonuc;
 

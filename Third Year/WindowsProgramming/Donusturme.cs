@@ -35,6 +35,7 @@ namespace SampleCodes
 
             /////////////Örnekler
             double dd = 5.44;
+
             //HATALI: çünkü double'den int'e dönüştürme explisit, yani açık söylenmesi lazım
             //ve bilerek bu işlem yapıyoruz çünkü noktadan sonraki kısmı kayıp olacak.
             int ii = dd;
@@ -42,12 +43,10 @@ namespace SampleCodes
 
             //illaki istiyoruz bunun yapması, şöyle yaparız :
             ii = (int)dd;
-            //^^^^^^^^^^^^^^^^^^^^^^
+            //   ^^^^^
             //Bu demek ben dd'deki ondalik kısmı kayip olacağını kabul ediyorum 
             //ve razıyım ve bilerek yapıyorum
-
-
-
+            
 
         }
     }
