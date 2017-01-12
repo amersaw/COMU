@@ -1,0 +1,61 @@
+include "lcd.pbp"
+DEFINE HSER_RCSTA 90h 
+DEFINE HSER_TXSTA 24h  
+DEFINE HSER_BAUD 9600
+DEFINE HSER_CLROERR 1
+ADCON1=7
+p1 VAR BYTE
+p2 VAR BYTE
+g VAR BYTE
+lcdout $fe,$40,$11,$0A,$04,$1B,$1B,$00,$00 'makas
+lcdout $fe,$48,$04,$0E,$0F,$1E,$0E,$0A,$00 'tas
+lcdout $fe,$50,$08,$08,$04,$04,$04,$08,$00 'kagit
+
+
+
+
+player1:
+    HSEROUT ["Birinci Hamle giriniz",13]
+    hserin 1000,player1,[p1]
+    if(p1<>116 AND p1<>84  AND p1<>109 AND p1<>77  AND p1<>107 AND p1<>75) THEN HSEROUT ["YANLIS GIRDINIZ(",p1,")",13] : GOTO player1
+    if(p1=109 or p1=77) THEN p1=0     
+    if(p1=116 or p1=84) THEN p1=1
+    if(p1=107 or p1=75) THEN p1=2
+    LCDOUT $fe,1,"Birinci HAMLE ", p1
+    pause 20
+player2:
+    HSEROUT ["Ikinci Hamle giriniz",13]
+    
+    hserin 1000,player2,[p2]
+    if(p2<>116 AND p2<>84  AND p2<>109 AND p2<>77  AND p2<>107 AND p2<>75) THEN HSEROUT ["YANLIS GIRDINIZ(",p2,")",13] : GOTO player2
+    
+    
+    if(p2=109 or p2=77) THEN p2=0
+    if(p2=116 or p2=84) THEN p2=1
+    if(p2=107 or p2=75) THEN p2=2
+    LCDOUT $fe,$C0,"IKINCI HAMLE ", p2
+    
+    pause 1000 
+    
+    
+    
+    if(p1=p2) THEN  LCDOUT $fe,0,"Ayni"  
+    if(p1=0 AND p2=1) THEN LCDOUT $fe,1,1," ",0," kirar" : LCDOUT $fe,$c0,"2. oyuncu kazandi" 'makas - tas       
+    if(p1=0 AND p2=2) THEN LCDOUT $fe,1,0," ",2,"i keser" : LCDOUT $fe,$c0,"1. oyuncu kazandi" ' makas - kagit
+    
+       
+    if(p1=1 AND p2=0) THEN LCDOUT $fe,1,1," ",0," kirar" : LCDOUT $fe,$c0,"1. oyuncu kazandi" ' tas - makas   
+    if(p1=1 AND p2=2) THEN LCDOUT $fe,1,2," ",1,"i sarar" : LCDOUT $fe,$c0,"2. oyuncu kazandi" ' tas - kagit
+    
+       
+    if(p1=2 AND p2=0) THEN LCDOUT $fe,1,0," ",2,"i keser" : LCDOUT $fe,$c0,"2. oyuncu kazandi" ' kagit - makas   
+    if(p1=2 AND p2=1) THEN LCDOUT $fe,1,2," ",1,"i sarar" : LCDOUT $fe,$c0,"1. oyuncu kazandi" ' kagit - tas
+    
+    HSEROUT ["Herhangi bir butun basin tekrarlamak icin"]
+    hserin [p1]
+    LCDOUT $fe,1
+    
+goto player1
+
+
+
