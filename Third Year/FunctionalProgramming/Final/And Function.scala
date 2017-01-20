@@ -1,4 +1,6 @@
-//And function 
+//And fonksiyon
+//Bu çözümler aynı sonuç veriyor ama farklı şekilde yazıldı
+
 def and (a:Boolean, b:Boolean) : Boolean ={
 	if(a==false && b==false) false
 	if(a==false && b==true)  false

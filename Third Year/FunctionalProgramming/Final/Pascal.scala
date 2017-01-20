@@ -13,8 +13,16 @@
 //Aynı zamanda dikkat edersek kenarlar her zaman 1 dır, kenarlar demek ki satır numarası sütun numarası aynı olunca (sağ kanat bir elemanı )  veya sütun numarası 0 olunca (sol kanat bir elemanı), bunlar isteyince hemen 1 dondurabiliriz, Pascal fonksiyon son hali böyle olur 
 
 def pascal(i:Int, j:Int) :Int={
-   if(i==0 || i==j) 1
+   if(j==0 || i==j) 1
    else pascal(i-1,j-1) + pascal(i-1,j)
 } 
 
 
+
+//Pascal Ucgeni ilk 10 satırı ekrana yazdırmak için
+for (i<- 0 until 10){  //satirlar 
+	for (j<- 0 to i){  //sutun 0'den bulundugu satira kadar (Cunku ucgendir, kare degildir)
+		print(pascal(i,j) + "\t")
+	}
+	println()
+}
