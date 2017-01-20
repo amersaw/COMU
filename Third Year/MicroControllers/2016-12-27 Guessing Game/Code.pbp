@@ -1,0 +1,70 @@
+include "lcd.pbp"
+DEFINE HSER_RCSTA 90h 
+DEFINE HSER_TXSTA 24h  
+DEFINE HSER_BAUD 9600
+DEFINE HSER_CLROERR 1
+
+
+
+
+
+ADCON1=7
+kelime VAR BYTE[6]
+tahmin var byte
+lcdout $fe,$40,$0E,$0E,$00,$00,$00,$00,$00 'TAM
+lcdout $fe,$48,$0E,$0E,$04,$04,$00,$00,$00 'TAM
+lcdout $fe,$50,$0E,$0E,$04,$07,$00,$00,$00 'TAM
+lcdout $fe,$58,$0E,$0E,$04,$1F,$00,$00,$00 'TAM
+lcdout $fe,$60,$0E,$0E,$04,$1F,$04,$02,$01 'TAM
+lcdout $fe,$68,$0E,$0E,$04,$1F,$04,$0A,$11 'TAM
+
+i var byte
+kalan_yanlis var byte
+Dogrular var byte
+
+label:
+    kalan_yanlis = 6
+    dogrular = 0
+    lcdout $fe,1
+    HSEROUT ["Birinci oyuncu 5 karakterli kelimesini girsin:",13]
+    for i= 1 to 5
+        hserin [kelime(i)]
+        HSEROUT["*"]
+    next i
+    LCDOUT $fe,1,"   Kelime Girildi",$fe,$C0,"   2.Oyuncu Basla"
+    pause 1000
+    lcdout $fe,1
+    tekrar_tahmin:
+
+    hserin [tahmin]
+     
+    if(kelime(1)=tahmin) then lcdout $fe,$80,tahmin : dogrular = dogrular+1
+    if(kelime(2)=tahmin) then lcdout $fe,$81,tahmin : dogrular = dogrular+1
+    if(kelime(3)=tahmin) then lcdout $fe,$82,tahmin : dogrular = dogrular+1
+    if(kelime(4)=tahmin) then lcdout $fe,$83,tahmin : dogrular = dogrular+1
+    if(kelime(5)=tahmin) then lcdout $fe,$84,tahmin : dogrular = dogrular+1
+    if(dogrular>=5) then
+        LCDOUT $fe,$C0,"Tahmin Edildi"
+        hserout [13,"Yeniden baslatmak icin herhangi tusa basiniz...",13]
+        hserin [tahmin]
+       goto label
+       lcdout $fe,1
+       pause 20
+    endif
+    if(kelime(1)<>tahmin AND kelime(2)<>tahmin AND kelime(3)<>tahmin AND kelime(4)<>tahmin AND kelime(5)<>tahmin) then
+
+        kalan_yanlis = kalan_yanlis -1
+        if (kalan_yanlis=0) then
+            lcdout $fe,$80,"  Kurtarilmadi :("
+            lcdout $fe,$C0,"Kalan yanlis :",#kalan_yanlis 
+            hserin [tahmin]
+            goto label            
+        else
+            LCDOUT $fe,$86,5-kalan_yanlis
+        endif
+
+        pause 20
+        lcdout $fe,$C0,"Kalan yanlis :",#kalan_yanlis 
+    endif
+   goto tekrar_tahmin
+goto label
